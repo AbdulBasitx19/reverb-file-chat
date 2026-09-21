@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\User;
+use App\Models\MessageAttachment;
 use App\Events\MessageSent; 
+use Illuminate\Support\Facades\Storage;
+use App\Events\FileSent;
+use Illuminate\Support\Str;
 
 class ChatController extends Controller
 {
