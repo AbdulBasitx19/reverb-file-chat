@@ -143,7 +143,7 @@
 [data-bs-theme="dark"] .chat-room-list::-webkit-scrollbar-thumb, [data-bs-theme="dark"] .chat-conversation::-webkit-scrollbar-thumb { background: var(--vz-border-color); }
 .user-item { transition: all 0.3s; cursor: pointer; }
 .user-item:hover { background-color: #f8f9fa; }
-.user-item.active { background-color: #e7f3ff; border-left: 3px solid #0d6efd; }
+.user-item.active { background-color: #e7f3ff; border-left: 3px solid #021633; }
 [data-bs-theme="dark"] .user-item:hover { background-color: var(--vz-light); }
 [data-bs-theme="dark"] .user-item.active { background-color: var(--vz-primary-bg-subtle); border-left: 3px solid var(--vz-primary); }
 .chat-list.right { text-align: right !important; }
