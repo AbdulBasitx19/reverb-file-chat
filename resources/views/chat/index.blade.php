@@ -256,7 +256,7 @@ $(document).ready(function() {
 
     function connectWebSocket() {
         const wsHost = '{{ env("REVERB_HOST", "127.0.0.1") }}';
-        const wsPort = '{{ env("REVERB_PORT", 8082) }}'; 
+        const wsPort = '{{ env("REVERB_PORT", 8080) }}'; 
         const appKey = '{{ env("REVERB_APP_KEY") }}';
         const wsUrl = `ws://${wsHost}:${wsPort}/app/${appKey}?protocol=7&client=js&version=8.2.0`;
         

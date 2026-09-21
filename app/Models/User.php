@@ -64,4 +64,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }
+    public function attachments()
+    {
+        return $this->hasMany(MessageAttachment::class, 'user_id');
+    }
 }
