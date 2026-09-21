@@ -18,6 +18,10 @@ return new class extends Migration
             $table->unsignedBigInteger('receiver_id');
 
             $table->string('message');
+            $table->boolean('is_delivered')->default(false);
+            $table->boolean('is_read')->default(false);
+            $table->timestamp('read_at')->nullable();
+            
             $table->timestamps();
 
             $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
