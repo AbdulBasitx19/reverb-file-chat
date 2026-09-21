@@ -24,3 +24,4 @@ Homestead.yaml
 Thumbs.db
 # Velzon Theme Assets (Stored externally)
 /public/assets
+storage/app/temp_uploads/

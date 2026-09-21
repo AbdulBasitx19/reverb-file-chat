@@ -50,5 +50,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
     Route::post('/chat', [ChatController::class, 'store'])->name('chat.store');
     Route::get('/chat/{userId}/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
-    
+    // Chunked file upload ke liye
+    Route::post('/chat/upload-chunk', [ChatController::class, 'uploadChunk'])->name('chat.upload-chunk');
+    Route::get('/chat/download/{attachmentId}', [ChatController::class, 'download'])->name('chat.download');
+    Route::delete('/chat/{messageId}', [ChatController::class, 'destroy'])->name('chat.destroy');
 });
