@@ -54,5 +54,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/chat/upload-chunk', [ChatController::class, 'uploadChunk'])->name('chat.upload-chunk');
     Route::get('/chat/download/{attachmentId}', [ChatController::class, 'download'])->name('chat.download');
     Route::delete('/chat/{messageId}', [ChatController::class, 'destroy'])->name('chat.destroy');
+
+    Route::post('/chat/ping', [ChatController::class, 'ping'])->name('chat.ping');
+    Route::post('/chat/ping-offline', [ChatController::class, 'pingOffline']);
     
 });

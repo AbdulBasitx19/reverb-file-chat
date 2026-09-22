@@ -28,8 +28,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'username',   // ✅ Added
+        'username',  
         'phone_num',
+        'last_seen',
     ];
 
     /**
@@ -52,6 +53,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_seen' => 'datetime',
         ];
     }
 
@@ -67,5 +69,30 @@ class User extends Authenticatable
     public function attachments()
     {
         return $this->hasMany(MessageAttachment::class, 'user_id');
+    }
+
+    /**
+     * Check karein ke user online hai ya nahi
+     * Agar last_seen 1 minute se kam purana hai to online
+     */
+    public function isOnline(): bool
+    {
+        return $this->last_seen && $this->last_seen->gt(now()->subMinute());
+    }
+    
+    /**
+     * Human-readable last seen format return karein
+     */
+    public function lastSeenFormatted(): string
+    {
+        if (!$this->last_seen) {
+            return 'Never';
+        }
+        
+        if ($this->isOnline()) {
+            return 'Online';
+        }
+        
+        return 'Last seen ' . $this->last_seen->diffForHumans();
     }
 }

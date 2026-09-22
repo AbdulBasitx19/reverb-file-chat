@@ -29,6 +29,9 @@
                         <div class="flex-grow-1 overflow-hidden">
                             <p class="text-truncate mb-0 fw-medium">{{ $user->name }}</p>
                             <small class="text-muted" style="font-size: 11px;">{{ $user->email }}</small>
+                            <div class="user-status mt-1">
+                                <small class="text-muted" style="font-size: 11px;">Offline</small>
+                            </div>
                         </div>
                     </a>
                 </li>
@@ -39,7 +42,6 @@
 
     {{-- ===== RIGHT SIDE: CHAT WINDOW ===== --}}
     <div class="user-chat minimal-border" style="background: #fff;">        
-        {{-- Empty state --}}
         <div id="no-chat-selected" class="d-flex align-items-center justify-content-center h-100">
             <div class="text-center text-muted p-5">
                 <i class="ri-chat-3-line fs-1 d-block mb-3"></i>
@@ -47,17 +49,17 @@
             </div>
         </div>
 
-        {{-- Chat Content Area --}}
         <div id="chat-content-area" class="d-none flex-column h-100">
             <div class="p-3 user-chat-topbar border-bottom" style="background: #fff;"> 
-                <h5 class="card-title mb-0" id="chat-with-user">Select a user to start chatting</h5>
+                <h5 class="card-title mb-0 d-flex align-items-center" id="chat-with-user">
+                    Select a user to start chatting
+                </h5>
             </div>
             
             <div class="chat-conversation p-3 p-lg-4 flex-grow-1 overflow-auto" id="chat-messages" style="background: var(--vz-body-bg);"> 
                 <!-- Messages will be appended here -->
             </div>
             
-            {{-- ✅ NEW: File Preview Area --}}
             <div id="file-preview-area" class="border-top" style="display: none; background: var(--vz-card-bg, #fff);">
                 <div class="p-3">
                     <div class="d-flex justify-content-between align-items-center mb-2">
@@ -73,7 +75,6 @@
             </div>
             
             <div class="chat-input-section p-3 border-top"> 
-                {{-- ✅ NEW: Upload Progress Bar --}}
                 <div id="upload-progress" class="mb-2" style="display: none;">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <small class="text-muted"><i class="ri-upload-cloud-2-line"></i> Uploading... <span id="upload-filename"></span></small>
@@ -86,14 +87,11 @@
 
                 <form id="message-form" class="d-flex align-items-center gap-2">
                     <input type="hidden" id="receiver-id" value=""> 
-                    
-                    {{-- ✅ NEW: Attachment Button --}}
                     <label for="file-input" class="btn btn-light btn-icon rounded-circle" style="cursor: pointer;" title="Attach files">
                         <i class="ri-attachment-2 fs-5"></i>
                     </label>
                     <input type="file" id="file-input" multiple style="display: none;" 
                            accept="image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar,.7z">
-                    
                     <input type="text" id="message-input" class="form-control bg-light border-light" placeholder="Type your message ..." autocomplete="off">
                     <button type="submit" class="btn btn-primary">
                         <i class="ri-send-plane-2-line"></i> Send
@@ -104,7 +102,6 @@
     </div>
 </div>
 
-{{-- ✅ NEW: Video Preview Modal --}}
 <div class="modal fade" id="videoPreviewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -125,7 +122,6 @@
 
 @section('page-css')
 <style>
-/* ===== YOUR EXISTING STYLES (PRESERVED) ===== */
 .chat-wrapper, .user-chat, .chat-conversation, .chat-list .user-chat-content { min-width: 0 !important; }
 .page-content:has(.chat-wrapper) { padding: 70px 0 60px 0 !important; }
 .chat-wrapper { display: flex !important; flex-direction: row !important; width: 100% !important; max-width: 100% !important; height: calc(100vh - 130px) !important; overflow: hidden !important; border: 0 !important; border-bottom: 1px solid var(--vz-border-color) !important; border-radius: 0 !important; }
@@ -143,7 +139,7 @@
 [data-bs-theme="dark"] .chat-room-list::-webkit-scrollbar-thumb, [data-bs-theme="dark"] .chat-conversation::-webkit-scrollbar-thumb { background: var(--vz-border-color); }
 .user-item { transition: all 0.3s; cursor: pointer; }
 .user-item:hover { background-color: #f8f9fa; }
-.user-item.active { background-color: #e7f3ff; border-left: 3px solid #021633; }
+.user-item.active { background-color: #e7f3ff; border-left: 3px solid #0d6efd; }
 [data-bs-theme="dark"] .user-item:hover { background-color: var(--vz-light); }
 [data-bs-theme="dark"] .user-item.active { background-color: var(--vz-primary-bg-subtle); border-left: 3px solid var(--vz-primary); }
 .chat-list.right { text-align: right !important; }
@@ -159,7 +155,6 @@
 [data-bs-theme="dark"] .chat-conversation { background: var(--vz-body-bg) !important; }
 [data-bs-theme="dark"] .chat-leftsidebar .form-control, [data-bs-theme="dark"] .chat-input-section .form-control { background: var(--vz-input-bg) !important; border-color: var(--vz-input-border) !important; }
 
-/* ===== NEW: File Upload UI Styles (Dark Mode Compatible) ===== */
 .file-preview-card { position: relative; width: 100px; height: 100px; border-radius: 8px; overflow: hidden; background: var(--vz-card-bg, #fff); border: 1px solid var(--vz-border-color); transition: all 0.2s; }
 .file-preview-card img { width: 100%; height: 100%; object-fit: cover; }
 .file-preview-card .file-icon { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--vz-light, #f8f9fa); }
@@ -167,7 +162,6 @@
 .file-preview-card .file-icon small { font-size: 9px; color: var(--vz-muted, #6c757d); text-align: center; padding: 0 4px; word-break: break-all; }
 .file-preview-card .remove-file { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,0.6); color: #fff; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
 .file-preview-card .remove-file:hover { background: rgba(220,53,69,0.9); }
-
 .message-file-image { max-width: 280px; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
 .message-file-image:hover { opacity: 0.9; }
 .message-file-document { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 8px; max-width: 280px; text-decoration: none; transition: all 0.2s; border: 1px solid var(--vz-border-color); background: var(--vz-card-bg, #fff); }
@@ -182,24 +176,24 @@
 @section('script-bottom')
 <script>
 $(document).ready(function() {
-    console.log("✅ ✅ ✅ FILE UPLOAD VERSION 1.0 LOADED ✅ ✅ ✅");
+    console.log("✅ ✅ ✅ FINAL CLEAN CHAT VERSION LOADED ✅ ✅ ✅");
 
     let currentUserId = parseInt("{{ auth()->id() }}");
     let selectedUserId = null;
     let socket = null;
     let currentChannel = null;
     let socketId = null;
-    let selectedFiles = []; // ✅ NEW: Store selected files
+    let selectedFiles = []; 
+    let statusInterval = null;
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const CHUNK_SIZE = 1024 * 1024; // ✅ 1 MB chunks
+    const CHUNK_SIZE = 1024 * 1024;
 
     function escapeHtml(text) {
         if (!text) return '';
         return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // ✅ NEW: Helper Functions
     function formatFileSize(bytes) {
         if (bytes === 0) return '0 Bytes';
         const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -225,30 +219,44 @@ $(document).ready(function() {
 
     function connectWebSocket() {
         const wsHost = '{{ env("REVERB_HOST", "127.0.0.1") }}';
-        const wsPort = '{{ env("REVERB_PORT", 8083) }}'; // ✅ Updated to 8083
+        const wsPort = '{{ env("REVERB_PORT", 8083) }}'; 
         const appKey = '{{ env("REVERB_APP_KEY") }}';
         const wsUrl = `ws://${wsHost}:${wsPort}/app/${appKey}?protocol=7&client=js&version=8.2.0`;
         socket = new WebSocket(wsUrl);
+        
         socket.onopen = function() { console.log('✅ WebSocket connected'); };
+        
         socket.onmessage = function(event) {
             try {
                 const data = JSON.parse(event.data);
                 handleWebSocketMessage(data);
             } catch (e) { console.error('JSON Parse Error:', e); }
         };
+        
         socket.onerror = function(error) { console.error('❌ WebSocket error:', error); };
-        socket.onclose = function(event) { if (event.code !== 1000) setTimeout(connectWebSocket, 3000); };
+        
+        socket.onclose = function(event) { 
+            console.log('🔌 WebSocket closed. Code:', event.code);
+            if (event.code !== 1000 && event.code !== 1005) {
+                setTimeout(connectWebSocket, 3000); 
+            }
+        };
     }
     
     function handleWebSocketMessage(data) {
         if (data.event === 'pusher:connection_established') {
             socketId = JSON.parse(data.data).socket_id;
+            socket.send(JSON.stringify({ event: 'pusher:subscribe', data: { channel: 'user-status' } }));
+            console.log('✅ Subscribed to: user-status');
         } else if (data.event === 'pusher_internal:subscription_succeeded') {
-            console.log('✅ Subscribed to:', currentChannel);
-        } else if (data.event === 'message.sent' || data.event === 'file.sent') { // ✅ Listen for both
+            console.log('✅ Subscription succeeded for:', data.data.channel);
+        } else if (data.event === 'message.sent' || data.event === 'file.sent') {
             let payload = typeof data.data === 'string' ? JSON.parse(data.data) : data.data;
             if (payload.message && typeof payload.message === 'object') payload = payload.message;
             appendMessage(payload);
+        } else if (data.event === 'user.status.updated') {
+            let payload = typeof data.data === 'string' ? JSON.parse(data.data) : data.data;
+            updateUserStatus(payload.user_id, payload.last_seen);
         }
     }
     
@@ -271,7 +279,10 @@ $(document).ready(function() {
     
     $('.user-item').on('click', function() {
         selectedUserId = $(this).data('user-id');
-        $('#chat-with-user').text('Chat with ' + $(this).data('user-name'));
+        const userName = $(this).data('user-name');
+        const currentStatusHtml = $(this).find('.user-status').html() || '<small class="text-muted" style="font-size: 11px;">Offline</small>';
+        
+        $('#chat-with-user').html(`${userName} <span class="ms-2">${currentStatusHtml}</span>`);
         $('#receiver-id').val(selectedUserId);
         $('#no-chat-selected').addClass('d-none');
         $('#chat-content-area').removeClass('d-none').addClass('d-flex');
@@ -298,7 +309,6 @@ $(document).ready(function() {
         });
     }
 
-    // ✅ NEW: File Selection & Preview Logic
     $('#file-input').on('change', function(e) {
         const files = Array.from(e.target.files);
         files.forEach(file => {
@@ -349,7 +359,6 @@ $(document).ready(function() {
         updateFilePreviewArea();
     });
 
-    // ✅ NEW: Chunked Upload Logic
     async function uploadFileChunked(file, receiverId, messageText) {
         const uploadId = crypto.randomUUID();
         const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
@@ -392,7 +401,6 @@ $(document).ready(function() {
         return true;
     }
 
-    // ✅ UPDATED: Form Submit Handler
     $('#message-form').on('submit', async function(e) {
         e.preventDefault();
         const messageText = $('#message-input').val().trim();
@@ -416,7 +424,6 @@ $(document).ready(function() {
         $('#message-input').val('');
     });
     
-    // ✅ UPDATED: Message Rendering (Text + Files)
     function appendMessage(msg) {
         let isOwnMessage = (parseInt(msg.sender_id) === parseInt(currentUserId));
         let alignment = isOwnMessage ? 'text-end' : 'text-start';
@@ -469,6 +476,92 @@ $(document).ready(function() {
         $('#modalVideoPlayer')[0].pause();
         $('#modalVideoPlayer')[0].currentTime = 0;
     });
+
+    // ==========================================
+    // ✅ FINAL CLEAN ONLINE/OFFLINE LOGIC (No aggressive visibility checks)
+    // ==========================================
+    
+    function sendStatusPing() {
+        fetch('/chat/ping', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+        }).catch(err => console.error('❌ Ping error:', err));
+    }
+
+    // Start Pinging (Har 30 seconds)
+    sendStatusPing();
+    statusInterval = setInterval(sendStatusPing, 30000);
+
+    // Go Offline Function (Sirf tab band ya logout par)
+    function goOffline() {
+        console.log('🔴 Going offline...');
+        if (statusInterval) {
+            clearInterval(statusInterval);
+            statusInterval = null;
+        }
+        navigator.sendBeacon('/chat/ping-offline', new URLSearchParams({
+            _token: csrfToken,
+            user_id: currentUserId
+        }));
+    }
+
+    // ✅ ONLY bind to beforeunload (Tab/Window close)
+    window.addEventListener('beforeunload', goOffline);
+
+    // ✅ ONLY bind to logout clicks/submits
+    $(document).on('click', 'a[href*="logout"], .logout-link, button[type="submit"][form*="logout"]', function() {
+        goOffline();
+    });
+    $(document).on('submit', 'form[action*="logout"]', function() {
+        goOffline();
+    });
+
+        function updateUserStatus(userId, lastSeen) {
+        const userItem = $(`.user-item[data-user-id="${userId}"]`);
+        if (userItem.length === 0 || !lastSeen) return;
+        
+        const lastSeenMs = new Date(lastSeen).getTime();
+        const nowMs = Date.now();
+        const diffMinutes = (nowMs - lastSeenMs) / 1000 / 60;
+        
+        let statusText = '';
+        let badgeClass = 'text-muted';
+        
+        if (diffMinutes < 1) {
+            // ✅ Agar 1 minute se kam hai, toh Online
+            statusText = 'Online';
+            badgeClass = 'text-success fw-medium';
+        } else {
+            // ✅ SMART UI TRICK: Backend 5 minute peeche set karta hai offline mark karne ke liye.
+            // Hum UI mein se 4 minute minus kar dete hain taake wo "1m ago" se shuru ho aur natural lage.
+            // Example: Backend 5 min bhejega -> UI mein 5 - 4 = 1 min show hoga.
+            // 1 real minute baad: Backend 6 min hoga -> UI mein 6 - 4 = 2 min show hoga.
+            let displayMinutes = Math.max(1, Math.floor(diffMinutes) - 4);
+            
+            if (displayMinutes < 60) {
+                statusText = `Last seen ${displayMinutes}m ago`;
+            } else if (displayMinutes < 1440) {
+                statusText = `Last seen ${Math.floor(displayMinutes / 60)}h ago`;
+            } else {
+                statusText = `Last seen ${Math.floor(displayMinutes / 1440)}d ago`;
+            }
+        }
+        
+        const statusHtml = `<small class="${badgeClass}" style="font-size: 11px;">${statusText}</small>`;
+        
+        // Update Sidebar
+        const statusContainer = userItem.find('.user-status');
+        if (statusContainer.length > 0) {
+            statusContainer.html(statusHtml);
+        } else {
+            userItem.find('.flex-grow-1').append(`<div class="user-status mt-1">${statusHtml}</div>`);
+        }
+        
+        // Update Topbar
+        if (parseInt(userId) === parseInt(selectedUserId)) {
+            $('#chat-with-user').html(`${userItem.data('user-name')} <span class="ms-2">${statusHtml}</span>`);
+        }
+    }
     
     function scrollToBottom() {
         let chatBox = document.getElementById('chat-messages');

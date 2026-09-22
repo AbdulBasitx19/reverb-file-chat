@@ -10,6 +10,7 @@ use App\Events\MessageSent;
 use Illuminate\Support\Facades\Storage;
 use App\Events\FileSent;
 use Illuminate\Support\Str;
+use App\Events\UserStatusUpdated; 
 
 class ChatController extends Controller
 {
@@ -223,5 +224,50 @@ class ChatController extends Controller
         $message->delete();
         
         return response()->json(['success' => true]);
+    }
+    /**
+     * User ping handle karein (Online status update)
+     */
+      public function ping(Request $request)
+    {
+        $user = auth()->user();
+        
+        if ($user) {
+            // last_seen ko current time par update karein
+            $user->last_seen = now();
+            $user->save();
+            
+            // Event fire karein taake doosre users ko real-time update mile
+            event(new \App\Events\UserStatusUpdated($user));
+        }
+        
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * User logout ya tab band hone par foran Offline signal bhejein
+     */
+        /**
+     * User logout ya tab band hone par foran Offline signal bhejein
+     */
+      
+   public function pingOffline(Request $request)
+    {
+        $userId = $request->input('user_id');
+        
+        if ($userId) {
+            // Direct DB update (Fastest & most reliable)
+            \Illuminate\Support\Facades\DB::table('users')
+                ->where('id', $userId)
+                ->update(['last_seen' => now()->subMinutes(5)]);
+            
+            // Event fire karein
+            $user = \App\Models\User::find($userId);
+            if ($user) {
+                event(new \App\Events\UserStatusUpdated($user));
+            }
+        }
+        
+        return response('', 204); // 204 No Content
     }
 }
